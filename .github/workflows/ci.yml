@@ -50,6 +50,7 @@ jobs:
         shell: pwsh
         run: |
           dotnet publish src/toki -c Release -o ./publish
+          rm publish/*.dll
           mkdir symbols
           mv publish/toki.pdb symbols/
 
