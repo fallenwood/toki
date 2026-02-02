@@ -1,0 +1,43 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TrimMode>partial</TrimMode>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <PublishSingleFile>true</PublishSingleFile>
+    <PublishTrimmed>true</PublishTrimmed>
+    <PublishAot>true</PublishAot>
+    <NoWarn>$(NoWarn);IL2026;IL2104;IL3050</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ConsoleAppFramework" />
+    <PackageReference Include="Markdig" />
+    <PackageReference Include="Tomlyn" />
+    <PackageReference Include="YamlDotNet" />
+    <PackageReference Include="Vecc.YamlDotNet.Analyzers.StaticGenerator" />
+    <PackageReference Include="minijinja-csharp" />
+    <PackageReference Include="ZLinq" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <DefaultThemeDir>$(MSBuildProjectDirectory)\..\..\themes\default</DefaultThemeDir>
+    <BuildDefaultTheme>true</BuildDefaultTheme>
+  </PropertyGroup>
+
+  <Target Name="BuildDefaultTheme" BeforeTargets="Build" Condition="'$(BuildDefaultTheme)' != 'false'">
+    <Exec Command="bun run build" WorkingDirectory="$(DefaultThemeDir)" />
+  </Target>
+
+  <Target Name="CopyDefaultThemeAssets" AfterTargets="Build" Condition="'$(BuildDefaultTheme)' != 'false'">
+    <ItemGroup>
+      <DefaultThemeDist Include="$(DefaultThemeDir)\dist\**\*" />
+      <DefaultThemeTemplates Include="$(DefaultThemeDir)\templates\**\*" />
+    </ItemGroup>
+  </Target>
+
+</Project>

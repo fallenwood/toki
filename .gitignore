@@ -1,0 +1,13 @@
+**/bin
+**/obj
+
+source
+public
+
+.vs
+
+output
+
+**/.build
+
+site.toml

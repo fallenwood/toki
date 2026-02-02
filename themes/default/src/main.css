@@ -1,0 +1,312 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+@plugin "daisyui" {
+  themes: light --default, dark --prefersdark;
+}
+
+/* ===== Custom Theme Colors ===== */
+@theme {
+  /* Light theme - Sophisticated Teal */
+  --color-primary: oklch(55% 0.15 180);
+  --color-primary-content: oklch(98% 0.01 180);
+  --color-secondary: oklch(65% 0.12 200);
+  --color-secondary-content: oklch(98% 0.01 200);
+  --color-accent: oklch(70% 0.14 160);
+  --color-accent-content: oklch(20% 0.02 160);
+  --color-neutral: oklch(35% 0.02 260);
+  --color-neutral-content: oklch(95% 0.01 260);
+
+  /* Typography scale refinements */
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Merriweather", ui-serif, Georgia, serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  /* Refined spacing scale */
+  --spacing-prose: 1.75rem;
+  --spacing-section: 3rem;
+}
+
+/* ===== Light Theme Overrides ===== */
+[data-theme="light"], :root:not([data-theme="dark"]) {
+  --b1: oklch(98% 0.005 180);    /* base-100 - warm off-white */
+  --b2: oklch(95% 0.008 180);    /* base-200 - subtle teal tint */
+  --b3: oklch(92% 0.012 180);    /* base-300 */
+  --bc: oklch(25% 0.02 260);     /* base-content - deep slate */
+  
+  --p: oklch(50% 0.15 180);      /* primary - deep teal */
+  --pc: oklch(98% 0.01 180);     /* primary-content */
+  --s: oklch(60% 0.12 200);      /* secondary - ocean blue */
+  --sc: oklch(98% 0.01 200);     /* secondary-content */
+  --a: oklch(65% 0.14 160);      /* accent - seafoam */
+  --ac: oklch(20% 0.02 160);     /* accent-content */
+  --n: oklch(30% 0.02 260);      /* neutral - slate */
+  --nc: oklch(95% 0.01 260);     /* neutral-content */
+  
+  --in: oklch(70% 0.15 230);     /* info */
+  --inc: oklch(98% 0.01 230);
+  --su: oklch(65% 0.18 145);     /* success */
+  --suc: oklch(98% 0.01 145);
+  --wa: oklch(75% 0.15 85);      /* warning */
+  --wac: oklch(25% 0.03 85);
+  --er: oklch(60% 0.2 25);       /* error */
+  --erc: oklch(98% 0.01 25);
+  
+  --rounded-box: 1rem;
+  --rounded-btn: 0.5rem;
+  --rounded-badge: 0.375rem;
+}
+
+/* ===== Dark Theme ===== */
+[data-theme="dark"] {
+  --b1: oklch(20% 0.02 260);     /* base-100 - deep slate */
+  --b2: oklch(25% 0.025 260);    /* base-200 */
+  --b3: oklch(30% 0.03 260);     /* base-300 */
+  --bc: oklch(92% 0.01 180);     /* base-content - light with teal hint */
+  
+  --p: oklch(65% 0.15 180);      /* primary - brighter teal for dark */
+  --pc: oklch(15% 0.02 180);     /* primary-content */
+  --s: oklch(70% 0.12 200);      /* secondary */
+  --sc: oklch(15% 0.02 200);     /* secondary-content */
+  --a: oklch(75% 0.14 160);      /* accent */
+  --ac: oklch(15% 0.02 160);     /* accent-content */
+  --n: oklch(40% 0.02 260);      /* neutral */
+  --nc: oklch(90% 0.01 260);     /* neutral-content */
+  
+  --in: oklch(75% 0.12 230);     /* info */
+  --inc: oklch(15% 0.02 230);
+  --su: oklch(70% 0.15 145);     /* success */
+  --suc: oklch(15% 0.02 145);
+  --wa: oklch(80% 0.12 85);      /* warning */
+  --wac: oklch(20% 0.03 85);
+  --er: oklch(70% 0.18 25);      /* error */
+  --erc: oklch(15% 0.02 25);
+  
+  --rounded-box: 1rem;
+  --rounded-btn: 0.5rem;
+  --rounded-badge: 0.375rem;
+}
+
+/* ===== Typography Refinements ===== */
+.prose {
+  --tw-prose-body: oklch(35% 0.02 260);
+  --tw-prose-headings: oklch(20% 0.02 260);
+  --tw-prose-links: oklch(50% 0.15 180);
+  --tw-prose-bold: oklch(20% 0.02 260);
+  --tw-prose-counters: oklch(50% 0.05 260);
+  --tw-prose-bullets: oklch(60% 0.05 260);
+  --tw-prose-quotes: oklch(40% 0.02 260);
+  --tw-prose-quote-borders: oklch(50% 0.15 180);
+  --tw-prose-code: oklch(45% 0.12 180);
+  --tw-prose-pre-bg: oklch(22% 0.02 260);
+  --tw-prose-pre-code: oklch(90% 0.01 260);
+}
+
+[data-theme="dark"] .prose {
+  --tw-prose-body: oklch(85% 0.01 260);
+  --tw-prose-headings: oklch(95% 0.01 180);
+  --tw-prose-links: oklch(70% 0.15 180);
+  --tw-prose-bold: oklch(95% 0.01 260);
+  --tw-prose-counters: oklch(70% 0.03 260);
+  --tw-prose-bullets: oklch(60% 0.03 260);
+  --tw-prose-quotes: oklch(80% 0.01 260);
+  --tw-prose-quote-borders: oklch(65% 0.15 180);
+  --tw-prose-code: oklch(75% 0.12 180);
+  --tw-prose-pre-bg: oklch(15% 0.02 260);
+  --tw-prose-pre-code: oklch(88% 0.01 260);
+}
+
+/* Enhanced prose styling */
+.prose {
+  line-height: 1.8;
+  font-size: 1.0625rem;
+}
+
+.prose h1, .prose h2, .prose h3, .prose h4 {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.prose h2 {
+  margin-top: 2.5em;
+  margin-bottom: 1em;
+  padding-bottom: 0.5em;
+  border-bottom: 1px solid oklch(90% 0.01 260);
+}
+
+[data-theme="dark"] .prose h2 {
+  border-bottom-color: oklch(30% 0.02 260);
+}
+
+.prose blockquote {
+  font-style: normal;
+  border-left-width: 3px;
+  padding-left: 1.5em;
+  background: oklch(96% 0.01 180 / 0.5);
+  padding: 1em 1.5em;
+  border-radius: 0 0.5rem 0.5rem 0;
+}
+
+[data-theme="dark"] .prose blockquote {
+  background: oklch(25% 0.02 260 / 0.5);
+}
+
+.prose code:not(pre code) {
+  background: oklch(94% 0.02 180);
+  padding: 0.2em 0.4em;
+  border-radius: 0.25rem;
+  font-size: 0.875em;
+  font-weight: 500;
+}
+
+[data-theme="dark"] .prose code:not(pre code) {
+  background: oklch(30% 0.03 260);
+}
+
+.prose pre {
+  border-radius: 0.75rem;
+  padding: 1.25rem 1.5rem;
+  border: 1px solid oklch(88% 0.01 260);
+}
+
+[data-theme="dark"] .prose pre {
+  border-color: oklch(28% 0.02 260);
+}
+
+.prose a {
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.prose a:hover {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* ===== Image styling ===== */
+.prose img {
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.08), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.prose img:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 12px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.08);
+}
+
+/* ===== Smooth transitions ===== */
+* {
+  transition-property: background-color, border-color, color;
+  transition-duration: 0.15s;
+  transition-timing-function: ease;
+}
+
+/* Disable transitions for elements that shouldn't animate */
+a, button, input, select, textarea,
+.btn, .badge, .card {
+  transition-property: background-color, border-color, color, transform, box-shadow, opacity;
+}
+
+/* ===== Card refinements ===== */
+.card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-1px);
+}
+
+/* ===== Link styling ===== */
+.link {
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.link:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ===== Button refinements ===== */
+.btn {
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+.btn-primary {
+  box-shadow: 0 2px 8px oklch(50% 0.15 180 / 0.3);
+}
+
+.btn-primary:hover {
+  box-shadow: 0 4px 12px oklch(50% 0.15 180 / 0.4);
+}
+
+/* ===== Badge refinements ===== */
+.badge {
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+/* ===== Navbar refinements ===== */
+.navbar {
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+}
+
+/* ===== Theme toggle icons ===== */
+.theme-icon-light {
+  color: oklch(70% 0.15 85); /* warm yellow/orange for sun */
+}
+
+.theme-icon-dark {
+  color: oklch(75% 0.12 270); /* soft purple/blue for moon */
+}
+
+/* ===== Focus states ===== */
+:focus-visible {
+  outline: 2px solid oklch(55% 0.15 180);
+  outline-offset: 2px;
+}
+
+/* ===== Selection ===== */
+::selection {
+  background: oklch(55% 0.15 180 / 0.25);
+  color: oklch(20% 0.02 260);
+}
+
+[data-theme="dark"] ::selection {
+  background: oklch(65% 0.15 180 / 0.3);
+  color: oklch(95% 0.01 260);
+}
+
+/* ===== Scrollbar styling ===== */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: oklch(94% 0.01 260);
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-track {
+  background: oklch(22% 0.02 260);
+}
+
+::-webkit-scrollbar-thumb {
+  background: oklch(75% 0.02 260);
+  border-radius: 5px;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+  background: oklch(40% 0.02 260);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: oklch(65% 0.02 260);
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+  background: oklch(50% 0.02 260);
+}

@@ -1,0 +1,18 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path=".gitignore" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Build.targets" />
+    <File Path="Directory.Packages.Props" />
+    <File Path="global.json" />
+    <File Path="nuget.config" />
+    <File Path="site.toml" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/toki/toki.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/toki.unittests/toki.unittests.csproj" />
+  </Folder>
+</Solution>

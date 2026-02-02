@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="w-full">
+  <div class="grid gap-6 md:grid-cols-1">
+    {% for post in posts %}
+      <div class="card card-compact bg-base-100 shadow-sm border border-base-200 hover:shadow-lg hover:border-primary/20 transition-all duration-300">
+        <div class="card-body">
+          <h2 class="card-title text-2xl">
+            <a href="{{ post.url }}" class="hover:text-primary transition-colors">{{ post.title }}</a>
+          </h2>
+          {% if post.excerpt %}
+            <div class="prose prose-base text-base-content/80 my-2 line-clamp-4 max-w-none">
+              {{ post.excerpt | safe }}
+            </div>
+          {% endif %}
+          <div class="flex items-center gap-4 text-sm text-base-content/60 mt-1">
+            <span class="inline-flex items-center gap-1.5">
+              <i data-lucide="calendar-days" class="w-4 h-4"></i>
+              {% if site.plugins and site.plugins.dayjs and site.plugins.dayjs.enabled %}
+                <time data-date="{{ post.dateIso }}" data-format="{{ site.date.format }}">{{ post.date }}</time>{% if post.dateRelative %} · <time data-date="{{ post.dateIso }}" data-relative="true">{{ post.dateRelative }}</time>{% endif %}
+              {% else %}
+                {{ post.date }}{% if post.dateRelative %} · {{ post.dateRelative }}{% endif %}
+              {% endif %}
+            </span>
+          </div>
+          {% if post.tags %}
+            <div class="flex flex-wrap items-center gap-2 mt-3">
+              <i data-lucide="tags" class="w-4 h-4 text-base-content/60"></i>
+              {% for tag in post.tags %}
+                <a href="{{ site.baseUrl }}tags/{{ tag }}/" class="badge badge-sm badge-outline hover:badge-primary transition-colors">{{ tag }}</a>
+              {% endfor %}
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  {% if pagination and pagination.total > 1 %}
+    <div class="flex justify-center mt-12">
+      <div class="join shadow-sm">
+        {% if pagination.prevUrl %}
+          <a class="join-item btn btn-md bg-base-100 border-base-200 hover:bg-base-200" href="{{ pagination.prevUrl }}">
+            <i data-lucide="chevron-left" class="w-4 h-4"></i>
+          </a>
+        {% endif %}
+
+        {% for item in pagination.items %}
+          {% if item.isEllipsis %}
+            <span class="join-item btn btn-md bg-base-100 border-base-200 btn-disabled">...</span>
+          {% else %}
+            <a class="join-item btn btn-md border-base-200 {% if item.isCurrent %}btn-primary text-primary-content{% else %}bg-base-100 hover:bg-base-200{% endif %}" href="{{ item.url }}">{{ item.label }}</a>
+          {% endif %}
+        {% endfor %}
+
+        {% if pagination.nextUrl %}
+          <a class="join-item btn btn-md bg-base-100 border-base-200 hover:bg-base-200" href="{{ pagination.nextUrl }}">
+            <i data-lucide="chevron-right" class="w-4 h-4"></i>
+          </a>
+        {% endif %}
+      </div>
+    </div>
+  {% endif %}
+</section>
+{% endblock %}
