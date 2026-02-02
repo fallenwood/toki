@@ -9,7 +9,7 @@
     <PackageVersion Include="Tomlyn" Version="0.19.0" />
     <PackageVersion Include="YamlDotNet" Version="16.3.0" />
     <PackageVersion Include="Vecc.YamlDotNet.Analyzers.StaticGenerator" Version="16.3.0" />
-    <PackageVersion Include="minijinja-csharp" Version="0.3.0" />
+    <PackageVersion Include="minijinja-csharp" Version="0.4.0" />
     <PackageVersion Include="ZLinq" Version="1.5.4" />
 
     <!-- tests -->
