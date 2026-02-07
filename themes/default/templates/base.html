@@ -17,12 +17,18 @@
   {% if site.plugins and site.plugins.shiki and site.plugins.shiki.enabled %}
     <link rel="stylesheet" href="{{ site.plugins.shiki.styleCdn }}" />
   {% endif %}
+  {% if site.plugins and site.plugins.arborium and site.plugins.arborium.enabled %}
+    <link rel="stylesheet" href="{{ site.plugins.arborium.cssCdn }}" />
+  {% endif %}
 
   {% if site.plugins and site.plugins.prismjs and site.plugins.prismjs.enabled %}
     <script defer src="{{ site.plugins.prismjs.jsCdn }}"></script>
     {% if site.plugins.prismjs.autoloaderEnabled and site.plugins.prismjs.autoloaderCdn %}
       <script defer src="{{ site.plugins.prismjs.autoloaderCdn }}"></script>
     {% endif %}
+  {% endif %}
+  {% if site.plugins and site.plugins.arborium and site.plugins.arborium.enabled %}
+    <script defer src="{{ site.plugins.arborium.jsCdn }}"></script>
   {% endif %}
 
   <link rel="stylesheet" href="{{ site.baseUrl }}assets/main.css" />

@@ -85,6 +85,11 @@ internal static class Config {
           Enabled = siteConfig.Plugins.Shiki.Enabled,
           StyleCdn = siteConfig.Plugins.Shiki.StyleCdn
         },
+        Arborium = new ArboriumViewModel {
+          Enabled = siteConfig.Plugins.Arborium.Enabled,
+          CssCdn = siteConfig.Plugins.Arborium.CssCdn,
+          JsCdn = siteConfig.Plugins.Arborium.JsCdn
+        },
         DayJs = new DayJsViewModel {
           Enabled = siteConfig.Plugins.DayJs.Enabled,
           Cdn = siteConfig.Plugins.DayJs.Cdn,
@@ -258,6 +263,7 @@ internal static class Config {
       PrismJs: GetPrismJsConfig(pluginTable, "prismjs", PluginOptions.Default.PrismJs),
       HighlightJs: GetHighlightJsConfig(pluginTable, "highlightjs", PluginOptions.Default.HighlightJs),
       Shiki: GetShikiConfig(pluginTable, "shiki", PluginOptions.Default.Shiki),
+      Arborium: GetArboriumConfig(pluginTable, "arborium", PluginOptions.Default.Arborium),
       DayJs: GetDayJsConfig(pluginTable, "dayjs", PluginOptions.Default.DayJs)
     );
   }
@@ -313,6 +319,19 @@ internal static class Config {
     return new ShikiConfig(
       Enabled: GetTomlBool(settingTable, "enabled") ?? fallback.Enabled,
       StyleCdn: GetTomlString(settingTable, "styleCdn") ?? fallback.StyleCdn
+    );
+  }
+
+  private static ArboriumConfig GetArboriumConfig(TomlTable table, string key, ArboriumConfig fallback) {
+    var settingTable = GetTomlTable(table, key);
+    if (settingTable is null) {
+      return fallback;
+    }
+
+    return new ArboriumConfig(
+      Enabled: GetTomlBool(settingTable, "enabled") ?? fallback.Enabled,
+      CssCdn: GetTomlString(settingTable, "cssCdn") ?? fallback.CssCdn,
+      JsCdn: GetTomlString(settingTable, "jsCdn") ?? fallback.JsCdn
     );
   }
 
@@ -397,6 +416,7 @@ internal record PluginOptions(
   PrismJsConfig PrismJs,
   HighlightJsConfig HighlightJs,
   ShikiConfig Shiki,
+  ArboriumConfig Arborium,
   DayJsConfig DayJs
 ) {
   public static PluginOptions Default => new(
@@ -421,6 +441,11 @@ internal record PluginOptions(
       true,
       "https://cdn.jsdelivr.net/npm/shiki@1.1.1/style.css"
     ),
+    new ArboriumConfig(
+      false,
+      "https://cdn.jsdelivr.net/npm/@arborium/arborium@2/dist/themes/github-dark.css",
+      "https://cdn.jsdelivr.net/npm/@arborium/arborium@2/dist/arborium.iife.js"
+    ),
     new DayJsConfig(
       false,
       "https://cdn.jsdelivr.net/npm/dayjs@1.11.13/dayjs.min.js",
@@ -438,6 +463,8 @@ internal record PrismJsConfig(bool Enabled, string CssCdn, string JsCdn, bool Au
 internal record HighlightJsConfig(bool Enabled, string CssCdn, string JsCdn, string LanguageCdnBase, List<string> Languages);
 
 internal record ShikiConfig(bool Enabled, string StyleCdn);
+
+internal record ArboriumConfig(bool Enabled, string CssCdn, string JsCdn);
 
 internal record DayJsConfig(bool Enabled, string Cdn, string Locale, string LocaleCdn, string RelativeTimeCdn);
 
