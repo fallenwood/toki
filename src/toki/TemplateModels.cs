@@ -56,6 +56,7 @@ internal sealed partial class PluginsViewModel : ITemplateSerializable {
   public required PrismJsViewModel PrismJs { get; init; }
   public required HighlightJsViewModel HighlightJs { get; init; }
   public required ShikiViewModel Shiki { get; init; }
+  public required ArboriumViewModel Arborium { get; init; }
   public required DayJsViewModel DayJs { get; init; }
 }
 
@@ -99,6 +100,13 @@ internal sealed partial class HighlightJsViewModel : ITemplateSerializable {
 internal sealed partial class ShikiViewModel : ITemplateSerializable {
   public required bool Enabled { get; init; }
   public required string StyleCdn { get; init; }
+}
+
+[MiniJinjaContext]
+internal sealed partial class ArboriumViewModel : ITemplateSerializable {
+  public required bool Enabled { get; init; }
+  public required string CssCdn { get; init; }
+  public required string JsCdn { get; init; }
 }
 
 [MiniJinjaContext]
