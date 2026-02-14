@@ -46,6 +46,10 @@ internal static partial class ContentLoader {
   private static partial Regex MoreTagRegex();
   private static readonly Regex moreTagRegex = MoreTagRegex();
 
+  [GeneratedRegex(@"<[^>]+>")]
+  private static partial Regex HtmlTagRegex();
+  private static readonly Regex htmlTagRegex = HtmlTagRegex();
+
   internal static ContentItem LoadMarkdownItem(string file, MarkdownPipeline pipeline, DateOptions dateOptions, ILogger logger, bool isPost) {
     var raw = File.ReadAllText(file);
     var (frontMatter, body) = FrontMatter.ParseFrontMatter(raw, logger);
@@ -68,6 +72,8 @@ internal static partial class ContentLoader {
       excerptHtml = html;
     }
 
+    var description = frontMatter.Description ?? GenerateDescription(excerptHtml);
+
     var dateDisplay = DateFormatting.FormatDate(date, dateOptions);
     var dateRelative = DateFormatting.FormatRelativeDate(date, dateOptions);
     logger.LogInformation("DateRelative for '{Title}': {DateRelative}", title, dateRelative ?? "(none)");
@@ -84,6 +90,7 @@ internal static partial class ContentLoader {
     return new ContentItem(
       SourcePath: file,
       Title: title,
+      Description: description,
       Slug: slug,
       Layout: layout,
       Date: date,
@@ -97,6 +104,12 @@ internal static partial class ContentLoader {
       Categories: categories,
       Hash: hash
     );
+  }
+
+  private static string GenerateDescription(string html) {
+    var text = System.Net.WebUtility.HtmlDecode(htmlTagRegex.Replace(html, " "));
+    text = Regex.Replace(text.Trim(), @"\s+", " ");
+    return text.Length > 200 ? text[..200].TrimEnd() + "…" : text;
   }
 
   private static string Slugify(string input) {
@@ -157,6 +170,7 @@ internal static partial class ContentLoader {
 internal record ContentItem(
   string SourcePath,
   string Title,
+  string Description,
   string Slug,
   string Layout,
   DateTimeOffset Date,
@@ -171,6 +185,7 @@ internal record ContentItem(
   string Hash) {
   public ContentPageViewModel ToPageModel() => new ContentPageViewModel {
     Title = Title,
+    Description = Description,
     Slug = Slug,
     Layout = Layout,
     Date = DateDisplay,

@@ -6,6 +6,9 @@ internal sealed class FrontMatterModel {
   [YamlMember(Alias = "title")]
   public string? Title { get; set; }
 
+  [YamlMember(Alias = "description")]
+  public string? Description { get; set; }
+
   [YamlMember(Alias = "layout")]
   public string? Layout { get; set; }
 

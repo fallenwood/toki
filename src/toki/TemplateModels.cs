@@ -156,6 +156,7 @@ internal sealed partial class I18nViewModel : ITemplateSerializable {
 [MiniJinjaContext]
 internal sealed partial class ContentPageViewModel : ITemplateSerializable {
   public required string Title { get; init; }
+  public required string Description { get; init; }
   public required string Slug { get; init; }
   public required string Layout { get; init; }
   public required string Date { get; init; }
