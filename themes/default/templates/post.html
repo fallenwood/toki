@@ -69,10 +69,10 @@
     <aside class="hidden lg:block lg:col-span-1">
       <div class="sticky top-24">
         <div class="card bg-base-100 shadow-sm border border-base-200 max-h-[calc(100vh-8rem)] overflow-auto">
-          <div class="card-body p-5">
+          <div class="card-body p-5" data-tab-group>
             <div role="tablist" class="tabs tabs-bordered w-full mb-4 grid grid-cols-2">
-              <a role="tab" class="tab tab-active" data-tab-target="toc-desktop">Contents</a>
-              <a role="tab" class="tab" data-tab-target="overview-desktop">Overview</a>
+              <button type="button" role="tab" class="tab tab-active" data-tab-target="toc-desktop">Table of Contents</button>
+              <button type="button" role="tab" class="tab" data-tab-target="overview-desktop">Overview</button>
             </div>
 
             <!-- TOC Tab -->
@@ -85,9 +85,16 @@
 
             <!-- Overview Tab -->
             <div id="overview-desktop" class="tab-content hidden space-y-4">
-              <div>
-                <h3 class="font-bold text-lg">{{ site.title }}</h3>
-                <p class="text-sm text-base-content/70 mt-1">{{ site.description }}</p>
+              <div class="flex flex-col items-center text-center gap-3">
+                <div class="avatar placeholder">
+                  <div class="w-20 h-20 rounded-full bg-base-200 text-base-content/80 border border-base-300">
+                    <i data-lucide="user-round" class="w-8 h-8"></i>
+                  </div>
+                </div>
+                <div>
+                  <h3 class="font-bold text-lg">{{ site.author if site.author else site.title }}</h3>
+                  <p class="text-sm text-base-content/70 mt-1">{{ site.description }}</p>
+                </div>
               </div>
               <div class="divider my-2"></div>
               <ul class="menu menu-sm p-0 rounded-box">
@@ -106,7 +113,7 @@
 <!-- Mobile Drawer for TOC -->
 <div id="toc-drawer" class="fixed inset-0 z-50 transform translate-x-full transition-transform duration-300 lg:hidden">
   <div class="absolute inset-0 bg-black/50" id="toc-backdrop"></div>
-  <div class="absolute right-0 top-0 h-full w-80 bg-base-100 shadow-2xl p-6 overflow-y-auto">
+  <div class="absolute right-0 top-0 h-full w-80 bg-base-100 shadow-2xl p-6 overflow-y-auto" data-tab-group>
     <div class="flex items-center justify-between mb-4">
       <h3 class="font-bold text-lg">Menu</h3>
       <button id="toc-close" class="btn btn-circle btn-ghost btn-sm">
@@ -115,8 +122,8 @@
     </div>
 
     <div role="tablist" class="tabs tabs-bordered w-full mb-4 grid grid-cols-2">
-      <a role="tab" class="tab tab-active" data-tab-target="toc-mobile">Contents</a>
-      <a role="tab" class="tab" data-tab-target="overview-mobile">Overview</a>
+      <button type="button" role="tab" class="tab tab-active" data-tab-target="toc-mobile">Table of Contents</button>
+      <button type="button" role="tab" class="tab" data-tab-target="overview-mobile">Overview</button>
     </div>
 
     <!-- TOC Tab Mobile -->
@@ -126,9 +133,16 @@
 
     <!-- Overview Tab Mobile -->
     <div id="overview-mobile" class="tab-content hidden space-y-4">
-      <div>
-        <h3 class="font-bold text-lg">{{ site.title }}</h3>
-        <p class="text-sm text-base-content/70 mt-1">{{ site.description }}</p>
+      <div class="flex flex-col items-center text-center gap-3">
+        <div class="avatar placeholder">
+          <div class="w-16 h-16 rounded-full bg-base-200 text-base-content/80 border border-base-300">
+            <i data-lucide="user-round" class="w-7 h-7"></i>
+          </div>
+        </div>
+        <div>
+          <h3 class="font-bold text-lg">{{ site.author if site.author else site.title }}</h3>
+          <p class="text-sm text-base-content/70 mt-1">{{ site.description }}</p>
+        </div>
       </div>
       <div class="divider my-2"></div>
       <ul class="menu menu-sm p-0 rounded-box">
@@ -185,34 +199,6 @@
     if (content && tocList) {
       const headings = Array.from(content.querySelectorAll('h2, h3'));
       if (headings.length === 0) {
-        // Hide TOC tab and switch to Overview if no headings
-        const groups = [
-          { tab: '[data-tab-target="toc-desktop"]', overview: '[data-tab-target="overview-desktop"]', contentId: 'toc-desktop', overviewId: 'overview-desktop' },
-          { tab: '[data-tab-target="toc-mobile"]', overview: '[data-tab-target="overview-mobile"]', contentId: 'toc-mobile', overviewId: 'overview-mobile' }
-        ];
-
-        groups.forEach(g => {
-          const tocTab = document.querySelector(g.tab);
-          const overviewTab = document.querySelector(g.overview);
-          const tocContent = document.getElementById(g.contentId);
-          const overviewContent = document.getElementById(g.overviewId);
-
-          if (tocTab && overviewTab && tocContent && overviewContent) {
-            tocTab.classList.add('hidden');
-            if (tocTab.parentElement) {
-              tocTab.parentElement.classList.remove('grid-cols-2');
-              tocTab.parentElement.classList.add('grid-cols-1');
-            }
-            tocTab.classList.remove('tab-active');
-            overviewTab.classList.add('tab-active');
-            
-            tocContent.classList.remove('block');
-            tocContent.classList.add('hidden');
-            overviewContent.classList.remove('hidden');
-            overviewContent.classList.add('block');
-          }
-        });
-
         if (tocEmpty) tocEmpty.classList.remove('hidden');
       } else {
         const slugify = (text) => text.toLowerCase().trim().replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-').replace(/^-+|-+$/g, '');
@@ -248,41 +234,27 @@
     }
 
     // Toggle Tabs
-    const setupTabs = (containerSelector) => {
-        const tabs = document.querySelectorAll(`${containerSelector} [data-tab-target]`);
-        if (!tabs.length) return;
+    const tabGroups = document.querySelectorAll('[data-tab-group]');
+    tabGroups.forEach(group => {
+      const tabs = group.querySelectorAll('[data-tab-target]');
+      tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          tabs.forEach(t => t.classList.remove('tab-active'));
+          group.querySelectorAll('.tab-content').forEach(c => {
+            c.classList.add('hidden');
+            c.classList.remove('block');
+          });
 
-        tabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                // Find parent container (card-body or sidebar div)
-                const parent = tab.closest('.card-body, .p-6');
-                if(!parent) return;
-
-                // Deactivate all tabs in this container
-                parent.querySelectorAll('[data-tab-target]').forEach(t => t.classList.remove('tab-active'));
-                
-                // Hide all contents in this container
-                parent.querySelectorAll('.tab-content').forEach(c => {
-                    c.classList.add('hidden');
-                    c.classList.remove('block');
-                });
-
-                // Activate clicked tab
-                tab.classList.add('tab-active');
-                
-                // Show target content
-                const targetId = tab.getAttribute('data-tab-target');
-                const target = document.getElementById(targetId);
-                if (target) {
-                    target.classList.remove('hidden');
-                    target.classList.add('block');
-                }
-            });
+          tab.classList.add('tab-active');
+          const targetId = tab.getAttribute('data-tab-target');
+          const target = targetId ? document.getElementById(targetId) : null;
+          if (target) {
+            target.classList.remove('hidden');
+            target.classList.add('block');
+          }
         });
-    }
-
-    setupTabs('.sticky'); // Desktop Sidebar
-    setupTabs('#toc-drawer'); // Mobile Drawer
+      });
+    });
 
   })();
 </script>
