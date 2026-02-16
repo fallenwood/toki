@@ -10,6 +10,7 @@ internal sealed partial class SiteViewModel : ITemplateSerializable {
   public required string Title { get; init; }
   public required string Description { get; init; }
   public required string Author { get; init; }
+  public required string AvatarLink { get; init; }
   public required string BaseUrl { get; init; }
   public required string Theme { get; init; }
   public required GitalkViewModel Gitalk { get; init; }

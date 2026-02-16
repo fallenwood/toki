@@ -20,6 +20,7 @@ internal static class Config {
         Title: GetTomlString(model, "title") ?? SiteConfig.Default.Title,
         Description: GetTomlString(model, "description") ?? SiteConfig.Default.Description,
         Author: GetTomlString(model, "author") ?? SiteConfig.Default.Author,
+        AvatarLink: GetTomlString(model, "avatarLink") ?? SiteConfig.Default.AvatarLink,
         BaseUrl: GetTomlString(model, "baseUrl") ?? SiteConfig.Default.BaseUrl,
         Theme: GetTomlString(model, "theme") ?? SiteConfig.Default.Theme,
         Gitalk: GetGitalkConfig(model),
@@ -41,6 +42,7 @@ internal static class Config {
       Title = siteConfig.Title,
       Description = siteConfig.Description,
       Author = siteConfig.Author,
+      AvatarLink = siteConfig.AvatarLink,
       BaseUrl = siteConfig.BaseUrl,
       Theme = siteConfig.Theme,
       Gitalk = new GitalkViewModel {
@@ -385,8 +387,8 @@ internal static class Config {
   }
 }
 
-internal record SiteConfig(string Title, string Description, string Author, string BaseUrl, string Theme, GitalkConfig Gitalk, DateOptions Date, SidebarOptions Sidebar, PagingOptions Paging, FooterOptions Footer, PluginOptions Plugins, DeployOptions Deploy, I18nOptions I18n) {
-  public static SiteConfig Default => new("Toki Site", "", "", "/", "themes/default", GitalkConfig.Disabled, DateOptions.Default, SidebarOptions.Default, PagingOptions.Default, FooterOptions.Default, PluginOptions.Default, DeployOptions.Default, I18nOptions.Default);
+internal record SiteConfig(string Title, string Description, string Author, string AvatarLink, string BaseUrl, string Theme, GitalkConfig Gitalk, DateOptions Date, SidebarOptions Sidebar, PagingOptions Paging, FooterOptions Footer, PluginOptions Plugins, DeployOptions Deploy, I18nOptions I18n) {
+  public static SiteConfig Default => new("Toki Site", "", "", "", "/", "themes/default", GitalkConfig.Disabled, DateOptions.Default, SidebarOptions.Default, PagingOptions.Default, FooterOptions.Default, PluginOptions.Default, DeployOptions.Default, I18nOptions.Default);
 }
 
 internal record GitalkConfig(bool Enabled, string ClientId, string ClientSecret, string Repo, string Owner, List<string> Admin) {
