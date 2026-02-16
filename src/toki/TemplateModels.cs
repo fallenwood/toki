@@ -10,6 +10,7 @@ internal sealed partial class SiteViewModel : ITemplateSerializable {
   public required string Title { get; init; }
   public required string Description { get; init; }
   public required string Author { get; init; }
+  public required string AvatarLink { get; init; }
   public required string BaseUrl { get; init; }
   public required string Theme { get; init; }
   public required GitalkViewModel Gitalk { get; init; }
@@ -228,6 +229,8 @@ internal sealed partial class TagPageModel : ITemplateSerializable {
 internal sealed partial class CategoriesIndexModel : ITemplateSerializable {
   public required SiteViewModel Site { get; init; }
   public required IReadOnlyList<CategoryViewModel> Categories { get; init; }
+  public required int TotalPosts { get; init; }
+  public required IReadOnlyList<CategoryArchiveYearViewModel> Archives { get; init; }
 }
 
 /// <summary>
@@ -259,6 +262,20 @@ internal sealed partial class CategoryViewModel : ITemplateSerializable {
   public required string Name { get; init; }
   public required int Count { get; init; }
   public required string Url { get; init; }
+}
+
+[MiniJinjaContext]
+internal sealed partial class CategoryArchiveYearViewModel : ITemplateSerializable {
+  public required int Year { get; init; }
+  public required int Count { get; init; }
+  public required IReadOnlyList<CategoryArchivePostViewModel> Posts { get; init; }
+}
+
+[MiniJinjaContext]
+internal sealed partial class CategoryArchivePostViewModel : ITemplateSerializable {
+  public required string Title { get; init; }
+  public required string Url { get; init; }
+  public required string MonthDay { get; init; }
 }
 
 /// <summary>
