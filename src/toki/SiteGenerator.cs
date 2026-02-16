@@ -185,16 +185,35 @@ internal static class SiteGenerator {
   }
 
   internal static void GenerateCategoryPages(MiniJinja.Environment env, List<ContentItem> posts, SiteViewModel siteModel, string publicDir, PagingOptions paging) {
+    if (posts.Count == 0) {
+      return;
+    }
+
+    var archiveGroups = posts
+      .AsValueEnumerable()
+      .GroupBy(post => post.Date.Year)
+      .OrderByDescending(group => group.Key)
+      .Select(group => new CategoryArchiveYearViewModel {
+        Year = group.Key,
+        Count = group.AsValueEnumerable().Count(),
+        Posts = group
+          .AsValueEnumerable()
+          .OrderByDescending(post => post.Date)
+          .Select(post => new CategoryArchivePostViewModel {
+            Title = post.Title,
+            Url = post.Url,
+            MonthDay = post.Date.ToString("MM-dd")
+          })
+          .ToList()
+      })
+      .ToList();
+
     var categoryGroups = posts
       .AsValueEnumerable()
       .SelectMany(post => post.Categories.AsValueEnumerable().Select(category => (category, post)))
       .GroupBy(pair => pair.category, StringComparer.OrdinalIgnoreCase)
       .OrderBy(group => group.Key)
       .ToList();
-
-    if (categoryGroups.Count == 0) {
-      return;
-    }
 
     var categoriesIndexPath = Path.Combine(publicDir, "categories", "index.html");
     if (TemplateEngine.TemplateExists(env, "categories.html")) {
@@ -204,7 +223,9 @@ internal static class SiteGenerator {
           Name = group.Key,
           Count = group.AsValueEnumerable().Count(),
           Url = $"/categories/{Slugify(group.Key)}/"
-        }).ToList()
+        }).ToList(),
+        TotalPosts = posts.Count,
+        Archives = archiveGroups
       });
     } else {
       var categories = categoryGroups.AsValueEnumerable().Select(group => new CategoryInfo(
@@ -213,6 +234,10 @@ internal static class SiteGenerator {
         Url: $"/categories/{Slugify(group.Key)}/"
       )).ToList();
       RenderCategoryIndexFallback(categoriesIndexPath, siteModel.I18n.Categories, categories);
+    }
+
+    if (categoryGroups.Count == 0) {
+      return;
     }
 
     foreach (var group in categoryGroups) {
