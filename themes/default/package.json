@@ -14,7 +14,8 @@
     "daisyui": "^5.5.14",
     "tailwindcss": "^4.1.18",
     "typescript": "~5.9.3",
-    "vite": "npm:rolldown-vite@7.2.5"
+    "vite": "npm:rolldown-vite@7.2.5",
+    "minisearch": "^7.1.0"
   },
   "resolutions": {
     "vite": "npm:rolldown-vite@7.2.5"

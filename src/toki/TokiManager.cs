@@ -89,6 +89,12 @@ internal class TokiManager {
     SiteGenerator.GenerateTagPages(env, posts, siteModel, publicDir, siteConfig.Paging);
     SiteGenerator.GenerateCategoryPages(env, posts, siteModel, publicDir, siteConfig.Paging);
     SiteGenerator.GenerateAtomFeed(posts, siteConfig, publicDir);
+    if (siteConfig.Plugins.Search.Enabled) {
+      // Build a lightweight search index consumed by the frontend (MiniSearch/Fuse/etc.)
+      SearchIndexGenerator.Generate(publicDir, posts, pages, siteConfig.Plugins.Search.IndexPath);
+      // Render dedicated search page (if enabled)
+      SiteGenerator.GenerateSearchPage(env, siteModel, publicDir, siteConfig.Plugins.Search);
+    }
 
     logger.LogInformation("Generated {PostCount} posts and {PageCount} pages in {PublicDir}", posts.Count, pages.Count, publicDir);
   }

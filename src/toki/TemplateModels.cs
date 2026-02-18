@@ -59,6 +59,7 @@ internal sealed partial class PluginsViewModel : ITemplateSerializable {
   public required ShikiViewModel Shiki { get; init; }
   public required ArboriumViewModel Arborium { get; init; }
   public required DayJsViewModel DayJs { get; init; }
+  public required SearchPluginViewModel Search { get; init; }
 }
 
 [MiniJinjaContext]
@@ -117,6 +118,16 @@ internal sealed partial class DayJsViewModel : ITemplateSerializable {
   public required string Locale { get; init; }
   public required string LocaleCdn { get; init; }
   public required string RelativeTimeCdn { get; init; }
+}
+
+[MiniJinjaContext]
+internal sealed partial class SearchPluginViewModel : ITemplateSerializable {
+  public required bool Enabled { get; init; }
+  public required string Provider { get; init; }
+  public required string IndexPath { get; init; }
+  public required int MinChars { get; init; }
+  public required int Limit { get; init; }
+  public required double Fuzzy { get; init; }
 }
 
 [MiniJinjaContext]
@@ -242,6 +253,24 @@ internal sealed partial class CategoryPageModel : ITemplateSerializable {
   public required string Category { get; init; }
   public required IReadOnlyList<ContentPageViewModel> Posts { get; init; }
   public required PaginationViewModel Pagination { get; init; }
+}
+
+/// <summary>
+/// Model for rendering search page
+/// </summary>
+[MiniJinjaContext]
+internal sealed partial class SearchPageModel : ITemplateSerializable {
+  public required SiteViewModel Site { get; init; }
+  public required SearchPageConfigViewModel Search { get; init; }
+}
+
+[MiniJinjaContext]
+internal sealed partial class SearchPageConfigViewModel : ITemplateSerializable {
+  public required string Provider { get; init; }
+  public required string IndexPath { get; init; }
+  public required int MinChars { get; init; }
+  public required int Limit { get; init; }
+  public required double Fuzzy { get; init; }
 }
 
 /// <summary>

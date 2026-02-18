@@ -41,13 +41,32 @@
     <script defer src="{{ site.plugins.arborium.jsCdn }}"></script>
   {% endif %}
 
-  <link rel="stylesheet" href="{{ site.baseUrl }}assets/main.css" />
-  <script defer src="{{ site.baseUrl }}assets/main.js"></script>
+  {# Use root-relative paths to ensure assets load in preview even when baseUrl is absolute #}
+  <link rel="stylesheet" href="/assets/main.css" />
+  <script defer src="/assets/main.js" id="toki-main-script"></script>
+  <script>
+    // Fallback: if main.js fails (e.g., baseUrl mismatch), attempt dynamic import from current origin
+    window.addEventListener('error', function onScriptError(e) {
+      if (e.target && (e.target as HTMLElement).id === 'toki-main-script') {
+        console.warn('[toki] main.js failed to load, retrying via dynamic import');
+        import('/assets/main.js').catch(err => console.error('[toki] dynamic import failed', err));
+      }
+    }, true);
+  </script>
 
-  <link rel="stylesheet" href="{{ site.baseUrl }}assets/custom.css" />
+  <link rel="stylesheet" href="/assets/custom.css" />
   {% block extra_head %}{% endblock %}
 </head>
-<body class="bg-base-200 text-base-content min-h-screen flex flex-col font-sans">
+<body class="bg-base-200 text-base-content min-h-screen flex flex-col font-sans"
+  data-base-url="{{ site.baseUrl }}"
+  data-search-enabled="{{ 'true' if site.plugins.search.enabled else 'false' }}"
+  data-search-provider="{{ site.plugins.search.provider }}"
+  data-search-index="{{ site.plugins.search.indexPath }}"
+  data-search-min-chars="{{ site.plugins.search.minChars }}"
+  data-search-limit="{{ site.plugins.search.limit }}"
+  data-search-fuzzy="{{ site.plugins.search.fuzzy }}"
+>
+
   <div class="sticky top-0 z-50 bg-base-100/80 backdrop-blur border-b border-base-200">
     <div class="navbar max-w-5xl mx-auto px-4 lg:px-6">
       <div class="navbar-start">
@@ -55,7 +74,19 @@
           <span class="font-bold tracking-tight text-2xl bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">{{ site.title }}</span>
         </a>
       </div>
-      <div class="navbar-center hidden lg:flex lg:ml-auto">
+      <div class="navbar-center hidden lg:flex lg:ml-auto items-center gap-4">
+        <div class="dropdown dropdown-end w-72" id="search-dropdown" data-search-root>
+          <label class="input input-bordered flex items-center gap-2 w-full" for="search-input-desktop">
+            <i data-lucide="search" class="w-4 h-4 opacity-60"></i>
+            <input id="search-input-desktop" type="search" placeholder="Search…" class="grow bg-transparent focus:outline-none" autocomplete="off" />
+            <kbd class="kbd kbd-xs text-neutral/60">/</kbd>
+          </label>
+          <div class="dropdown-content z-[60] mt-2 w-full shadow-xl bg-base-100 rounded-box border border-base-200 hidden" id="search-results-panel">
+            <ul class="menu menu-sm max-h-96 overflow-y-auto" id="search-results-list"></ul>
+            <div class="divider my-0"></div>
+            <a id="search-view-all" class="btn btn-ghost btn-sm justify-start" href="{{ site.baseUrl }}search/">View all results</a>
+          </div>
+        </div>
         <ul class="menu menu-horizontal px-1 gap-2 font-medium">
           <li><a class="gap-2" href="{{ site.baseUrl }}"><i data-lucide="house"></i>{{ site.nav.home }}</a></li>
           <li><a class="gap-2" href="{{ site.baseUrl }}categories/"><i data-lucide="archive"></i>{{ site.nav.archive }}</a></li>
@@ -63,7 +94,7 @@
           <li><a class="gap-2" href="{{ site.baseUrl }}atom.xml"><i data-lucide="rss"></i>{{ site.nav.rss }}</a></li>
           <li><a class="gap-2" href="{{ site.baseUrl }}about/"><i data-lucide="user"></i>{{ site.nav.about }}</a></li>
         </ul>
-        <label class="swap swap-rotate btn btn-ghost btn-circle ml-2" aria-label="Toggle theme">
+        <label class="swap swap-rotate btn btn-ghost btn-circle" aria-label="Toggle theme">
           <input type="checkbox" id="theme-toggle-desktop">
           <i data-lucide="sun" class="swap-off text-lg theme-icon-light"></i>
           <i data-lucide="moon" class="swap-on text-lg theme-icon-dark"></i>
@@ -85,6 +116,16 @@
   <div id="mobile-menu" class="hidden lg:hidden w-full bg-base-100 border-b border-base-200">
     <div class="max-w-5xl mx-auto px-4 lg:px-6">
       <nav class="py-4">
+        <div class="form-control w-full mb-4" data-search-root-mobile>
+          <label class="input input-bordered flex items-center gap-2" for="search-input-mobile">
+            <i data-lucide="search" class="w-4 h-4 opacity-60"></i>
+            <input id="search-input-mobile" type="search" placeholder="Search…" class="grow bg-transparent" autocomplete="off" />
+          </label>
+          <div class="mt-2 hidden" id="search-results-panel-mobile">
+            <ul class="menu menu-sm bg-base-100 rounded-box border border-base-200 max-h-80 overflow-y-auto" id="search-results-list-mobile"></ul>
+          </div>
+          <a id="search-view-all-mobile" class="link link-primary mt-2 inline-flex items-center gap-1" href="{{ site.baseUrl }}search/">View all results</a>
+        </div>
         <ul class="menu menu-lg w-full gap-2">
           <li><a class="gap-3" href="{{ site.baseUrl }}"><i data-lucide="house"></i>{{ site.nav.home }}</a></li>
           <li><a class="gap-3" href="{{ site.baseUrl }}categories/"><i data-lucide="archive"></i>{{ site.nav.archive }}</a></li>

@@ -14,4 +14,16 @@
     </PackageReference>
     <PackageReference Include="FluentAssertions" />
   </ItemGroup>
+
+  <PropertyGroup>
+    <!-- Disable analyzers/source generators to avoid ConsoleAppFramework conflicts -->
+    <RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>
+    <RunAnalyzersDuringLiveAnalysis>false</RunAnalyzersDuringLiveAnalysis>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\toki\toki.csproj">
+      <ExcludeAssets>analyzers</ExcludeAssets>
+    </ProjectReference>
+  </ItemGroup>
 </Project>

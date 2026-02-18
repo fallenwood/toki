@@ -184,6 +184,51 @@ internal static class SiteGenerator {
     }
   }
 
+  internal static void GenerateSearchPage(MiniJinja.Environment env, SiteViewModel siteModel, string publicDir, SearchPluginConfig searchConfig) {
+    if (!searchConfig.Enabled) {
+      return;
+    }
+
+    var outputPath = Path.Combine(publicDir, "search", "index.html");
+    var searchModel = new SearchPageModel {
+      Site = siteModel,
+      Search = new SearchPageConfigViewModel {
+        Provider = searchConfig.Provider,
+        IndexPath = searchConfig.IndexPath,
+        MinChars = searchConfig.MinChars,
+        Limit = searchConfig.Limit,
+        Fuzzy = searchConfig.Fuzzy
+      }
+    };
+
+    if (TemplateEngine.TemplateExists(env, "search.html")) {
+      TemplateEngine.RenderToFile(env, "search.html", outputPath, searchModel);
+      return;
+    }
+
+    RenderSearchPageFallback(outputPath, searchModel);
+  }
+
+  private static void RenderSearchPageFallback(string outputPath, SearchPageModel model) {
+    var directory = Path.GetDirectoryName(outputPath);
+    if (!string.IsNullOrWhiteSpace(directory)) {
+      Directory.CreateDirectory(directory);
+    }
+
+    var builder = new StringBuilder();
+    builder.AppendLine("<!DOCTYPE html>");
+    builder.AppendLine("<html lang=\"en\">");
+    builder.AppendLine("<head><meta charset=\"utf-8\" /><title>Search</title></head>");
+    builder.AppendLine("<body>");
+    builder.AppendLine("<h1>Search</h1>");
+    builder.AppendLine("<input type=\"search\" id=\"search-input\" placeholder=\"Search…\" />");
+    builder.AppendLine("<ul id=\"search-results\"></ul>");
+    builder.AppendLine("<script>console.warn('Using fallback search page; provide search.html template for better UX.');</script>");
+    builder.AppendLine("</body></html>");
+
+    File.WriteAllText(outputPath, builder.ToString(), Encoding.UTF8);
+  }
+
   internal static void GenerateCategoryPages(MiniJinja.Environment env, List<ContentItem> posts, SiteViewModel siteModel, string publicDir, PagingOptions paging) {
     if (posts.Count == 0) {
       return;
