@@ -98,6 +98,14 @@ internal static class Config {
           Locale = siteConfig.Plugins.DayJs.Locale,
           LocaleCdn = siteConfig.Plugins.DayJs.LocaleCdn,
           RelativeTimeCdn = siteConfig.Plugins.DayJs.RelativeTimeCdn
+        },
+        Search = new SearchPluginViewModel {
+          Enabled = siteConfig.Plugins.Search.Enabled,
+          Provider = siteConfig.Plugins.Search.Provider,
+          IndexPath = siteConfig.Plugins.Search.IndexPath,
+          MinChars = siteConfig.Plugins.Search.MinChars,
+          Limit = siteConfig.Plugins.Search.Limit,
+          Fuzzy = siteConfig.Plugins.Search.Fuzzy
         }
       },
       Date = new DateOptionsViewModel {
@@ -266,7 +274,8 @@ internal static class Config {
       HighlightJs: GetHighlightJsConfig(pluginTable, "highlightjs", PluginOptions.Default.HighlightJs),
       Shiki: GetShikiConfig(pluginTable, "shiki", PluginOptions.Default.Shiki),
       Arborium: GetArboriumConfig(pluginTable, "arborium", PluginOptions.Default.Arborium),
-      DayJs: GetDayJsConfig(pluginTable, "dayjs", PluginOptions.Default.DayJs)
+      DayJs: GetDayJsConfig(pluginTable, "dayjs", PluginOptions.Default.DayJs),
+      Search: GetSearchConfig(pluginTable, "search", PluginOptions.Default.Search)
     );
   }
 
@@ -352,6 +361,24 @@ internal static class Config {
     );
   }
 
+  private static SearchPluginConfig GetSearchConfig(TomlTable table, string key, SearchPluginConfig fallback) {
+    var settingTable = GetTomlTable(table, key);
+    if (settingTable is null) {
+      return fallback;
+    }
+
+    return new SearchPluginConfig(
+      Enabled: GetTomlBool(settingTable, "enabled") ?? fallback.Enabled,
+      Provider: GetTomlString(settingTable, "provider") ?? fallback.Provider,
+      IndexPath: GetTomlString(settingTable, "indexPath") ?? fallback.IndexPath,
+      MinChars: GetTomlInt(settingTable, "minChars") ?? fallback.MinChars,
+      Limit: GetTomlInt(settingTable, "limit") ?? fallback.Limit,
+      Fuzzy: settingTable.TryGetValue("fuzzy", out var fuzzyVal) && double.TryParse(fuzzyVal?.ToString(), out var fuzzy)
+        ? fuzzy
+        : fallback.Fuzzy
+    );
+  }
+
   private static DeployOptions GetDeployOptions(TomlTable model) {
     var deployTable = GetTomlTable(model, "deploy");
     if (deployTable is null) {
@@ -419,7 +446,8 @@ internal record PluginOptions(
   HighlightJsConfig HighlightJs,
   ShikiConfig Shiki,
   ArboriumConfig Arborium,
-  DayJsConfig DayJs
+  DayJsConfig DayJs,
+  SearchPluginConfig Search
 ) {
   public static PluginOptions Default => new(
     new PluginSetting(false, "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"),
@@ -454,6 +482,14 @@ internal record PluginOptions(
       "zh-CN",
       "https://cdn.jsdelivr.net/npm/dayjs@1.11.13/locale/zh-cn.js",
       "https://cdn.jsdelivr.net/npm/dayjs@1.11.13/plugin/relativeTime.js"
+    ),
+    new SearchPluginConfig(
+      Enabled: true,
+      Provider: "minisearch",
+      IndexPath: "search-index.json",
+      MinChars: 2,
+      Limit: 12,
+      Fuzzy: 0.2
     )
   );
 }
@@ -469,6 +505,8 @@ internal record ShikiConfig(bool Enabled, string StyleCdn);
 internal record ArboriumConfig(bool Enabled, string CssCdn, string JsCdn);
 
 internal record DayJsConfig(bool Enabled, string Cdn, string Locale, string LocaleCdn, string RelativeTimeCdn);
+
+internal record SearchPluginConfig(bool Enabled, string Provider, string IndexPath, int MinChars, int Limit, double Fuzzy);
 
 internal record DeployOptions(string Remote, string Branch, string? Repo) {
   public static DeployOptions Default => new("origin", "gh-pages", null);

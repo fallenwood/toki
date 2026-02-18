@@ -15,7 +15,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="ConsoleAppFramework" />
+    <PackageReference Include="ConsoleAppFramework">
+      <!-- Avoid leaking source generator/analyzers to consumers (e.g., test project) -->
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <PackageReference Include="Markdig" />
     <PackageReference Include="Tomlyn" />
     <PackageReference Include="YamlDotNet" />
@@ -30,6 +33,7 @@
   </PropertyGroup>
 
   <Target Name="BuildDefaultTheme" BeforeTargets="Build" Condition="'$(BuildDefaultTheme)' != 'false'">
+    <Exec Command="bun install" WorkingDirectory="$(DefaultThemeDir)" />
     <Exec Command="bun run build" WorkingDirectory="$(DefaultThemeDir)" />
   </Target>
 
