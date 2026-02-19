@@ -80,6 +80,42 @@ This is the about page.
   }
 
   [Fact]
+  public void Preview_build_overrides_base_url_with_preview_origin() {
+    using var temp = new TempTestSite();
+    temp.WriteConfig("""
+      title = "Preview Site"
+      baseUrl = "https://prod.example.com/blog"  # should be ignored in preview
+      [plugins.search]
+      enabled = false
+      """);
+
+    temp.WriteMinimalTemplates();
+    temp.WritePost("preview-post.md", """
+---
+title: Preview Post
+date: 2024-02-10 09:30
+---
+This is a preview post.
+""");
+
+    var previewBaseUrl = "http://127.0.0.1:5123"; // no trailing slash on purpose; normalize should add it
+    var loggerFactory = NullLoggerFactory.Instance;
+    var manager = new TokiManager(temp.Root, NullLogger<TokiManager>.Instance, loggerFactory);
+
+    manager.Build(previewBaseUrl);
+
+    var indexPath = Path.Combine(temp.PublicDir, "index.html");
+    File.Exists(indexPath).Should().BeTrue();
+    var html = File.ReadAllText(indexPath);
+    html.Should().Contain("data-base-url='http://127.0.0.1:5123/'");
+
+    var atomPath = Path.Combine(temp.PublicDir, "atom.xml");
+    File.Exists(atomPath).Should().BeTrue("atom feed should still be generated");
+    var atomXml = File.ReadAllText(atomPath);
+    atomXml.Should().Contain("http://127.0.0.1:5123/", "Atom feed should use preview baseUrl");
+  }
+
+  [Fact]
   public void Config_parses_search_plugin_settings() {
     const string toml = """
       [plugins.search]
@@ -152,7 +188,7 @@ This is the about page.
     public void WriteMinimalTemplates() {
       var templatesDir = Path.Combine(Root, "themes", "default", "templates");
       Directory.CreateDirectory(templatesDir);
-      File.WriteAllText(Path.Combine(templatesDir, "base.html"), "<!doctype html><html><body>{% block content %}{% endblock %}</body></html>");
+      File.WriteAllText(Path.Combine(templatesDir, "base.html"), "<!doctype html><html><body data-base-url='{{ site.baseUrl }}'>{% block content %}{% endblock %}</body></html>");
       File.WriteAllText(Path.Combine(templatesDir, "post.html"), "{% extends \"base.html\" %}{% block content %}{{ content|safe }}{% endblock %}");
       File.WriteAllText(Path.Combine(templatesDir, "page.html"), "{% extends \"base.html\" %}{% block content %}{{ content|safe }}{% endblock %}");
       File.WriteAllText(Path.Combine(templatesDir, "index.html"), "{% extends \"base.html\" %}{% block content %}{% for post in posts %}<article><a href='{{ post.url }}'>{{ post.title }}</a></article>{% endfor %}{% endblock %}");

@@ -37,13 +37,13 @@ internal static class Config {
     }
   }
 
-  internal static SiteViewModel BuildSiteModel(SiteConfig siteConfig) {
+  internal static SiteViewModel BuildSiteModel(SiteConfig siteConfig, string? baseUrlOverride = null) {
     return new SiteViewModel {
       Title = siteConfig.Title,
       Description = siteConfig.Description,
       Author = siteConfig.Author,
       AvatarLink = siteConfig.AvatarLink,
-      BaseUrl = siteConfig.BaseUrl,
+      BaseUrl = string.IsNullOrWhiteSpace(baseUrlOverride) ? siteConfig.BaseUrl : NormalizeBaseUrl(baseUrlOverride),
       Theme = siteConfig.Theme,
       Gitalk = new GitalkViewModel {
         Enabled = siteConfig.Gitalk.Enabled,
@@ -133,6 +133,14 @@ internal static class Config {
         PagePrefix = siteConfig.I18n.PagePrefix
       }
     };
+  }
+
+  internal static string NormalizeBaseUrl(string? baseUrl) {
+    if (string.IsNullOrWhiteSpace(baseUrl)) {
+      return "/";
+    }
+
+    return baseUrl.EndsWith("/", StringComparison.Ordinal) ? baseUrl : baseUrl + "/";
   }
 
   private static string? GetTomlString(TomlTable table, string key) {

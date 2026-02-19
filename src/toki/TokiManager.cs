@@ -24,14 +24,19 @@ internal class TokiManager {
     configPath = Path.Combine(root, "site.toml");
   }
 
-  public void Build() {
+  public void Build(string? baseUrlOverride = null) {
     if (!Directory.Exists(sourceDir)) {
       logger.LogError("Missing source directory: {SourceDir}", sourceDir);
       return;
     }
 
     var siteConfig = Config.LoadSiteConfig(configPath);
-    var siteModel = Config.BuildSiteModel(siteConfig);
+    if (!string.IsNullOrWhiteSpace(baseUrlOverride)) {
+      var normalized = Config.NormalizeBaseUrl(baseUrlOverride);
+      siteConfig = siteConfig with { BaseUrl = normalized };
+      logger.LogInformation("Preview baseUrl override applied: {BaseUrl}", normalized);
+    }
+    var siteModel = Config.BuildSiteModel(siteConfig, baseUrlOverride);
     var markdownPipeline = new MarkdownPipelineBuilder()
         .UseAdvancedExtensions()
         .Build();
@@ -100,7 +105,8 @@ internal class TokiManager {
   }
 
   public async Task Watch(int port, CancellationToken cancellationToken) {
-    this.Build();
+    var previewBaseUrl = $"http://127.0.0.1:{port}/";
+    this.Build(previewBaseUrl);
 
     var reloadToken = new CancellationTokenSource();
 
@@ -119,7 +125,7 @@ internal class TokiManager {
       debouncer.Debounce(() => {
         logger.LogInformation("File changed: {Name}. Rebuilding...", e.Name);
         try {
-          Build();
+          Build(previewBaseUrl);
           PreviewServer.TriggerReload();
         } catch (Exception ex) {
           logger.LogError(ex, "Build failed");
