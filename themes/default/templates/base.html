@@ -52,7 +52,7 @@
   <script>
     // Fallback: if main.js fails (e.g., baseUrl mismatch), attempt dynamic import from current origin
     window.addEventListener('error', function onScriptError(e) {
-      if (e.target && (e.target as HTMLElement).id === 'toki-main-script') {
+      if (e.target && e.target.id === 'toki-main-script') {
         console.warn('[toki] main.js failed to load, retrying via dynamic import');
         import('/assets/main.js').catch(err => console.error('[toki] dynamic import failed', err));
       }
