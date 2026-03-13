@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@source "../templates";
 @plugin "@tailwindcss/typography";
 @plugin "daisyui" {
   themes: light --default, dark --prefersdark;
@@ -195,32 +196,25 @@
   box-shadow: 0 8px 12px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.08);
 }
 
-/* ===== Smooth transitions ===== */
-* {
-  transition-property: background-color, border-color, color;
-  transition-duration: 0.15s;
+/* ===== Targeted transitions (no wildcard *) ===== */
+a, button, .btn, .badge, .card, .link, .menu a, input, select, textarea {
+  transition-property: background-color, border-color, color, transform, box-shadow, opacity;
+  transition-duration: 0.2s;
   transition-timing-function: ease;
 }
 
-/* Disable transitions for elements that shouldn't animate */
-a, button, input, select, textarea,
-.btn, .badge, .card {
-  transition-property: background-color, border-color, color, transform, box-shadow, opacity;
-}
-
-/* ===== Card refinements ===== */
-.card {
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.card:hover {
-  transform: translateY(-1px);
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 /* ===== Link styling ===== */
 .link {
   text-decoration: none;
-  transition: color 0.15s ease;
 }
 
 .link:hover {
@@ -235,17 +229,17 @@ a, button, input, select, textarea,
 }
 
 .btn-primary {
-  box-shadow: 0 2px 8px oklch(50% 0.15 180 / 0.3);
+  box-shadow: 0 1px 6px oklch(50% 0.15 180 / 0.2);
 }
 
 .btn-primary:hover {
-  box-shadow: 0 4px 12px oklch(50% 0.15 180 / 0.4);
+  box-shadow: 0 3px 10px oklch(50% 0.15 180 / 0.3);
 }
 
 /* ===== Badge refinements ===== */
 .badge {
   font-weight: 500;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.01em;
 }
 
 /* ===== Navbar refinements ===== */
@@ -256,11 +250,11 @@ a, button, input, select, textarea,
 
 /* ===== Theme toggle icons ===== */
 .theme-icon-light {
-  color: oklch(70% 0.15 85); /* warm yellow/orange for sun */
+  color: oklch(70% 0.15 85);
 }
 
 .theme-icon-dark {
-  color: oklch(75% 0.12 270); /* soft purple/blue for moon */
+  color: oklch(75% 0.12 270);
 }
 
 /* ===== Focus states ===== */
@@ -282,21 +276,17 @@ a, button, input, select, textarea,
 
 /* ===== Scrollbar styling ===== */
 ::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: oklch(94% 0.01 260);
-}
-
-[data-theme="dark"] ::-webkit-scrollbar-track {
-  background: oklch(22% 0.02 260);
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
   background: oklch(75% 0.02 260);
-  border-radius: 5px;
+  border-radius: 4px;
 }
 
 [data-theme="dark"] ::-webkit-scrollbar-thumb {
@@ -309,4 +299,41 @@ a, button, input, select, textarea,
 
 [data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
   background: oklch(50% 0.02 260);
+}
+
+/* ===== Post card accent ===== */
+.post-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.post-card::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: linear-gradient(to bottom, oklch(55% 0.15 180), oklch(65% 0.12 200));
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.post-card:hover::before {
+  opacity: 1;
+}
+
+/* ===== Post article header gradient ===== */
+.post-header-accent {
+  background: linear-gradient(135deg, oklch(55% 0.15 180 / 0.06), oklch(65% 0.12 200 / 0.04));
+}
+
+[data-theme="dark"] .post-header-accent {
+  background: linear-gradient(135deg, oklch(55% 0.15 180 / 0.1), oklch(65% 0.12 200 / 0.06));
+}
+
+/* ===== Footer gradient divider ===== */
+.footer-divider {
+  height: 1px;
+  background: linear-gradient(to right, transparent, oklch(55% 0.15 180 / 0.3), oklch(65% 0.12 200 / 0.3), transparent);
 }
