@@ -15,6 +15,11 @@
     <meta name="twitter:title" content="{{ page.title }}" />
     <meta name="twitter:description" content="{{ page.description if page.description else site.description }}" />
   {% endif %}
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
   {% if site.plugins and site.plugins.lucide and site.plugins.lucide.enabled %}
     <script defer src="{{ site.plugins.lucide.cdn }}"></script>
   {% endif %}
@@ -57,7 +62,7 @@
   <link rel="stylesheet" href="/assets/custom.css" />
   {% block extra_head %}{% endblock %}
 </head>
-<body class="bg-base-200 text-base-content min-h-screen flex flex-col font-sans"
+<body class="bg-base-200 text-base-content min-h-screen flex flex-col font-sans antialiased"
   data-base-url="{{ site.baseUrl }}"
   data-search-enabled="{{ 'true' if site.plugins.search.enabled else 'false' }}"
   data-search-provider="{{ site.plugins.search.provider }}"
@@ -67,19 +72,19 @@
   data-search-fuzzy="{{ site.plugins.search.fuzzy }}"
 >
 
-  <div class="sticky top-0 z-50 bg-base-100/80 backdrop-blur border-b border-base-200">
-    <div class="navbar max-w-5xl mx-auto px-4 lg:px-6">
+  <header class="sticky top-0 z-50 bg-base-100/80 backdrop-blur-lg border-b border-base-300/50">
+    <nav class="navbar max-w-5xl mx-auto px-4 lg:px-6">
       <div class="navbar-start">
-        <a class="btn btn-ghost text-xl px-0 relative hover:bg-transparent" href="{{ site.baseUrl }}">
-          <span class="font-bold tracking-tight text-2xl bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">{{ site.title }}</span>
+        <a class="group flex items-center gap-2 px-0 hover:opacity-80 transition-opacity" href="{{ site.baseUrl }}">
+          <span class="font-bold tracking-tight text-xl bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">{{ site.title }}</span>
         </a>
       </div>
-      <div class="navbar-center hidden lg:flex lg:ml-auto items-center gap-4">
-        <div class="dropdown dropdown-end w-72" id="search-dropdown" data-search-root>
-          <label class="input input-bordered flex items-center gap-2 w-full" for="search-input-desktop">
-            <i data-lucide="search" class="w-4 h-4 opacity-60"></i>
-            <input id="search-input-desktop" type="search" placeholder="Search…" class="grow bg-transparent focus:outline-none" autocomplete="off" />
-            <kbd class="kbd kbd-xs text-neutral/60">/</kbd>
+      <div class="navbar-center hidden lg:flex lg:ml-auto items-center gap-2">
+        <div class="dropdown dropdown-end w-64" id="search-dropdown" data-search-root>
+          <label class="input input-sm input-bordered flex items-center gap-2 w-full bg-base-200/50" for="search-input-desktop">
+            <i data-lucide="search" class="w-3.5 h-3.5 opacity-50"></i>
+            <input id="search-input-desktop" type="search" placeholder="Search…" class="grow bg-transparent focus:outline-none text-sm" autocomplete="off" />
+            <kbd class="kbd kbd-xs text-base-content/40">/</kbd>
           </label>
           <div class="dropdown-content z-[60] mt-2 w-full shadow-xl bg-base-100 rounded-box border border-base-200 hidden" id="search-results-panel">
             <ul class="menu menu-sm max-h-96 overflow-y-auto" id="search-results-list"></ul>
@@ -87,51 +92,51 @@
             <a id="search-view-all" class="btn btn-ghost btn-sm justify-start" href="{{ site.baseUrl }}search/">View all results</a>
           </div>
         </div>
-        <ul class="menu menu-horizontal px-1 gap-2 font-medium">
-          <li><a class="gap-2" href="{{ site.baseUrl }}"><i data-lucide="house"></i>{{ site.nav.home }}</a></li>
-          <li><a class="gap-2" href="{{ site.baseUrl }}categories/"><i data-lucide="archive"></i>{{ site.nav.archive }}</a></li>
-          <li><a class="gap-2" href="{{ site.baseUrl }}tags/"><i data-lucide="tags"></i>{{ site.nav.tags }}</a></li>
-          <li><a class="gap-2" href="{{ site.baseUrl }}atom.xml"><i data-lucide="rss"></i>{{ site.nav.rss }}</a></li>
-          <li><a class="gap-2" href="{{ site.baseUrl }}about/"><i data-lucide="user"></i>{{ site.nav.about }}</a></li>
+        <ul class="menu menu-horizontal menu-sm px-1 gap-0.5 font-medium">
+          <li><a class="gap-1.5 rounded-lg" href="{{ site.baseUrl }}"><i data-lucide="house" class="w-4 h-4"></i>{{ site.nav.home }}</a></li>
+          <li><a class="gap-1.5 rounded-lg" href="{{ site.baseUrl }}categories/"><i data-lucide="archive" class="w-4 h-4"></i>{{ site.nav.archive }}</a></li>
+          <li><a class="gap-1.5 rounded-lg" href="{{ site.baseUrl }}tags/"><i data-lucide="tags" class="w-4 h-4"></i>{{ site.nav.tags }}</a></li>
+          <li><a class="gap-1.5 rounded-lg" href="{{ site.baseUrl }}atom.xml"><i data-lucide="rss" class="w-4 h-4"></i>{{ site.nav.rss }}</a></li>
+          <li><a class="gap-1.5 rounded-lg" href="{{ site.baseUrl }}about/"><i data-lucide="user" class="w-4 h-4"></i>{{ site.nav.about }}</a></li>
         </ul>
-        <label class="swap swap-rotate btn btn-ghost btn-circle" aria-label="Toggle theme">
+        <label class="swap swap-rotate btn btn-ghost btn-circle btn-sm" aria-label="Toggle theme">
           <input type="checkbox" id="theme-toggle-desktop">
-          <i data-lucide="sun" class="swap-off text-lg theme-icon-light"></i>
-          <i data-lucide="moon" class="swap-on text-lg theme-icon-dark"></i>
+          <i data-lucide="sun" class="swap-off w-4 h-4 theme-icon-light"></i>
+          <i data-lucide="moon" class="swap-on w-4 h-4 theme-icon-dark"></i>
         </label>
       </div>
       <div class="navbar-end lg:hidden">
-        <label class="swap swap-rotate btn btn-ghost btn-circle mr-1" aria-label="Toggle theme">
+        <label class="swap swap-rotate btn btn-ghost btn-circle btn-sm mr-1" aria-label="Toggle theme">
           <input type="checkbox" id="theme-toggle-mobile">
-          <i data-lucide="sun" class="swap-off text-lg theme-icon-light"></i>
-          <i data-lucide="moon" class="swap-on text-lg theme-icon-dark"></i>
+          <i data-lucide="sun" class="swap-off w-4 h-4 theme-icon-light"></i>
+          <i data-lucide="moon" class="swap-on w-4 h-4 theme-icon-dark"></i>
         </label>
-        <button id="mobile-menu-open" class="btn btn-ghost btn-circle" aria-label="Open menu">
-          <i data-lucide="menu" class="w-6 h-6"></i>
+        <button id="mobile-menu-open" class="btn btn-ghost btn-circle btn-sm" aria-label="Open menu">
+          <i data-lucide="menu" class="w-5 h-5"></i>
         </button>
       </div>
-    </div>
-  </div>
+    </nav>
+  </header>
 
-  <div id="mobile-menu" class="hidden lg:hidden w-full bg-base-100 border-b border-base-200">
+  <div id="mobile-menu" class="hidden lg:hidden w-full bg-base-100 border-b border-base-300/50">
     <div class="max-w-5xl mx-auto px-4 lg:px-6">
       <nav class="py-4">
         <div class="form-control w-full mb-4" data-search-root-mobile>
           <label class="input input-bordered flex items-center gap-2" for="search-input-mobile">
-            <i data-lucide="search" class="w-4 h-4 opacity-60"></i>
+            <i data-lucide="search" class="w-4 h-4 opacity-50"></i>
             <input id="search-input-mobile" type="search" placeholder="Search…" class="grow bg-transparent" autocomplete="off" />
           </label>
           <div class="mt-2 hidden" id="search-results-panel-mobile">
             <ul class="menu menu-sm bg-base-100 rounded-box border border-base-200 max-h-80 overflow-y-auto" id="search-results-list-mobile"></ul>
           </div>
-          <a id="search-view-all-mobile" class="link link-primary mt-2 inline-flex items-center gap-1" href="{{ site.baseUrl }}search/">View all results</a>
+          <a id="search-view-all-mobile" class="link link-primary mt-2 inline-flex items-center gap-1 text-sm" href="{{ site.baseUrl }}search/">View all results</a>
         </div>
-        <ul class="menu menu-lg w-full gap-2">
-          <li><a class="gap-3" href="{{ site.baseUrl }}"><i data-lucide="house"></i>{{ site.nav.home }}</a></li>
-          <li><a class="gap-3" href="{{ site.baseUrl }}categories/"><i data-lucide="archive"></i>{{ site.nav.archive }}</a></li>
-          <li><a class="gap-3" href="{{ site.baseUrl }}tags/"><i data-lucide="tags"></i>{{ site.nav.tags }}</a></li>
-          <li><a class="gap-3" href="{{ site.baseUrl }}atom.xml"><i data-lucide="rss"></i>{{ site.nav.rss }}</a></li>
-          <li><a class="gap-3" href="{{ site.baseUrl }}about/"><i data-lucide="user"></i>{{ site.nav.about }}</a></li>
+        <ul class="menu menu-md w-full gap-1">
+          <li><a class="gap-3 rounded-lg" href="{{ site.baseUrl }}"><i data-lucide="house" class="w-5 h-5"></i>{{ site.nav.home }}</a></li>
+          <li><a class="gap-3 rounded-lg" href="{{ site.baseUrl }}categories/"><i data-lucide="archive" class="w-5 h-5"></i>{{ site.nav.archive }}</a></li>
+          <li><a class="gap-3 rounded-lg" href="{{ site.baseUrl }}tags/"><i data-lucide="tags" class="w-5 h-5"></i>{{ site.nav.tags }}</a></li>
+          <li><a class="gap-3 rounded-lg" href="{{ site.baseUrl }}atom.xml"><i data-lucide="rss" class="w-5 h-5"></i>{{ site.nav.rss }}</a></li>
+          <li><a class="gap-3 rounded-lg" href="{{ site.baseUrl }}about/"><i data-lucide="user" class="w-5 h-5"></i>{{ site.nav.about }}</a></li>
         </ul>
       </nav>
     </div>
@@ -141,10 +146,13 @@
     {% block content %}{% endblock %}
   </main>
 
-  <footer class="footer footer-center p-10 bg-base-100 text-base-content rounded">
-    <div>
-      <p>© {{ site.footer.yearStart }} - {{ site.footer.yearCurrent }} <span class="text-secondary">♥</span> {{ site.title }}</p>
-      <p>Powered by <a href="#" class="link link-hover font-bold">{{ site.footer.poweredBy }}</a></p>
+  <footer class="mt-auto">
+    <div class="footer-divider max-w-5xl mx-auto"></div>
+    <div class="footer footer-center py-8 px-4 text-base-content/60">
+      <div class="flex flex-col items-center gap-2">
+        <p class="text-sm">© {{ site.footer.yearStart }}–{{ site.footer.yearCurrent }} <span class="font-medium text-base-content">{{ site.title }}</span></p>
+        <p class="text-xs">Powered by <a href="#" class="link link-hover font-medium text-primary/80">{{ site.footer.poweredBy }}</a></p>
+      </div>
     </div>
   </footer>
   {% if site.plugins and site.plugins.mathjax and site.plugins.mathjax.enabled %}
