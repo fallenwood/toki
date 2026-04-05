@@ -1,13 +1,18 @@
 namespace Toki;
 
+using Microsoft.Extensions.Logging;
 using Tomlyn.Model;
 using ZLinq;
 
 internal static class Config {
-  internal static SiteConfig LoadSiteConfig(string configPath) {
+  internal static SiteConfig LoadSiteConfig(string configPath, ILogger? logger = null) {
+    var fullPath = Path.GetFullPath(configPath);
     if (!File.Exists(configPath)) {
+      logger?.LogWarning("Config file not found: {ConfigPath}, using defaults", fullPath);
       return SiteConfig.Default;
     }
+
+    logger?.LogInformation("Loading config from {ConfigPath}", fullPath);
 
     try {
       var toml = File.ReadAllText(configPath);
@@ -30,9 +35,11 @@ internal static class Config {
         Footer: GetFooterOptions(model),
         Plugins: GetPluginOptions(model),
         Deploy: GetDeployOptions(model),
-        I18n: GetI18nOptions(model)
+        I18n: GetI18nOptions(model),
+        Friends: GetFriendsConfig(model)
       );
-    } catch {
+    } catch (Exception ex) {
+      logger?.LogError(ex, "Failed to parse config from {ConfigPath}, using defaults", fullPath);
       return SiteConfig.Default;
     }
   }
@@ -58,7 +65,8 @@ internal static class Config {
         Archive = siteConfig.I18n.Archive,
         Tags = siteConfig.I18n.Tags,
         Rss = siteConfig.I18n.Rss,
-        About = siteConfig.I18n.About
+        About = siteConfig.I18n.About,
+        Friends = siteConfig.I18n.Friends
       },
       Footer = new FooterViewModel {
         YearStart = siteConfig.Footer.YearStart,
@@ -126,12 +134,16 @@ internal static class Config {
         Categories = siteConfig.I18n.Categories,
         Rss = siteConfig.I18n.Rss,
         About = siteConfig.I18n.About,
+        Friends = siteConfig.I18n.Friends,
         TagPrefix = siteConfig.I18n.TagPrefix,
         CategoryPrefix = siteConfig.I18n.CategoryPrefix,
         Previous = siteConfig.I18n.Previous,
         Next = siteConfig.I18n.Next,
         PagePrefix = siteConfig.I18n.PagePrefix
-      }
+      },
+      Friends = siteConfig.Friends.Items
+        .Select(f => new FriendViewModel { Name = f.Name, Link = f.Link, Avatar = f.Avatar })
+        .ToList()
     };
   }
 
@@ -405,6 +417,7 @@ internal static class Config {
       Categories: GetTomlString(i18nTable, "categories") ?? I18nOptions.Default.Categories,
       Rss: GetTomlString(i18nTable, "rss") ?? I18nOptions.Default.Rss,
       About: GetTomlString(i18nTable, "about") ?? I18nOptions.Default.About,
+      Friends: GetTomlString(i18nTable, "friends") ?? I18nOptions.Default.Friends,
       TagPrefix: GetTomlString(i18nTable, "tagPrefix") ?? I18nOptions.Default.TagPrefix,
       CategoryPrefix: GetTomlString(i18nTable, "categoryPrefix") ?? I18nOptions.Default.CategoryPrefix,
       Previous: GetTomlString(i18nTable, "previous") ?? I18nOptions.Default.Previous,
@@ -412,10 +425,28 @@ internal static class Config {
       PagePrefix: GetTomlString(i18nTable, "pagePrefix") ?? I18nOptions.Default.PagePrefix
     );
   }
+
+  private static FriendsConfig GetFriendsConfig(TomlTable model) {
+    if (!model.TryGetValue("friends", out var value) || value is not TomlTableArray friendsArray) {
+      return FriendsConfig.Default;
+    }
+
+    var items = friendsArray
+      .AsValueEnumerable()
+      .Select(entry => new FriendConfig(
+        Name: GetTomlString(entry, "name") ?? string.Empty,
+        Link: GetTomlString(entry, "link") ?? string.Empty,
+        Avatar: GetTomlString(entry, "avatar") ?? string.Empty
+      ))
+      .Where(f => !string.IsNullOrWhiteSpace(f.Name) && !string.IsNullOrWhiteSpace(f.Link))
+      .ToList();
+
+    return new FriendsConfig(items);
+  }
 }
 
-internal record SiteConfig(string Title, string Description, string Author, string AvatarLink, string BaseUrl, string Theme, GitalkConfig Gitalk, DateOptions Date, SidebarOptions Sidebar, PagingOptions Paging, FooterOptions Footer, PluginOptions Plugins, DeployOptions Deploy, I18nOptions I18n) {
-  public static SiteConfig Default => new("Toki Site", "", "", "", "/", "themes/default", GitalkConfig.Disabled, DateOptions.Default, SidebarOptions.Default, PagingOptions.Default, FooterOptions.Default, PluginOptions.Default, DeployOptions.Default, I18nOptions.Default);
+internal record SiteConfig(string Title, string Description, string Author, string AvatarLink, string BaseUrl, string Theme, GitalkConfig Gitalk, DateOptions Date, SidebarOptions Sidebar, PagingOptions Paging, FooterOptions Footer, PluginOptions Plugins, DeployOptions Deploy, I18nOptions I18n, FriendsConfig Friends) {
+  public static SiteConfig Default => new("Toki Site", "", "", "", "/", "themes/default", GitalkConfig.Disabled, DateOptions.Default, SidebarOptions.Default, PagingOptions.Default, FooterOptions.Default, PluginOptions.Default, DeployOptions.Default, I18nOptions.Default, FriendsConfig.Default);
 }
 
 internal record GitalkConfig(bool Enabled, string ClientId, string ClientSecret, string Repo, string Owner, List<string> Admin) {
@@ -512,6 +543,12 @@ internal record DeployOptions(string Remote, string Branch, string? Repo) {
   public static DeployOptions Default => new("origin", "gh-pages", null);
 }
 
-internal record I18nOptions(string Home, string Archive, string Tags, string Categories, string Rss, string About, string TagPrefix, string CategoryPrefix, string Previous, string Next, string PagePrefix) {
-  public static I18nOptions Default => new("Home", "Archive", "Tags", "Categories", "RSS", "About", "Tag", "Category", "Previous", "Next", "Page");
+internal record I18nOptions(string Home, string Archive, string Tags, string Categories, string Rss, string About, string Friends, string TagPrefix, string CategoryPrefix, string Previous, string Next, string PagePrefix) {
+  public static I18nOptions Default => new("Home", "Archive", "Tags", "Categories", "RSS", "About", "Friends", "Tag", "Category", "Previous", "Next", "Page");
+}
+
+internal record FriendConfig(string Name, string Link, string Avatar);
+
+internal record FriendsConfig(List<FriendConfig> Items) {
+  public static FriendsConfig Default => new([]);
 }

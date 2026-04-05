@@ -80,7 +80,7 @@ public class Commands {
     var logger = loggerFactory.CreateLogger("toki");
 
     // Load config to get remote and branch
-    var siteConfig = Config.LoadSiteConfig(configPath);
+    var siteConfig = Config.LoadSiteConfig(configPath, logger);
     var deployRemote = siteConfig.Deploy.Remote;
     var deployBranch = siteConfig.Deploy.Branch;
     var deployRepo = siteConfig.Deploy.Repo;
