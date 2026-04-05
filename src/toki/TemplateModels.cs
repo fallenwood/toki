@@ -21,6 +21,7 @@ internal sealed partial class SiteViewModel : ITemplateSerializable {
   public required SidebarViewModel Sidebar { get; init; }
   public required PagingViewModel Paging { get; init; }
   public required I18nViewModel I18n { get; init; }
+  public required IReadOnlyList<FriendViewModel> Friends { get; init; }
 }
 
 [MiniJinjaContext]
@@ -40,6 +41,7 @@ internal sealed partial class NavViewModel : ITemplateSerializable {
   public required string Tags { get; init; }
   public required string Rss { get; init; }
   public required string About { get; init; }
+  public required string Friends { get; init; }
 }
 
 [MiniJinjaContext]
@@ -155,11 +157,22 @@ internal sealed partial class I18nViewModel : ITemplateSerializable {
   public required string Categories { get; init; }
   public required string Rss { get; init; }
   public required string About { get; init; }
+  public required string Friends { get; init; }
   public required string TagPrefix { get; init; }
   public required string CategoryPrefix { get; init; }
   public required string Previous { get; init; }
   public required string Next { get; init; }
   public required string PagePrefix { get; init; }
+}
+
+/// <summary>
+/// View model for a friend link entry.
+/// </summary>
+[MiniJinjaContext]
+internal sealed partial class FriendViewModel : ITemplateSerializable {
+  public required string Name { get; init; }
+  public required string Link { get; init; }
+  public required string Avatar { get; init; }
 }
 
 /// <summary>

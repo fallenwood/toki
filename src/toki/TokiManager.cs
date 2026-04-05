@@ -30,7 +30,7 @@ internal class TokiManager {
       return;
     }
 
-    var siteConfig = Config.LoadSiteConfig(configPath);
+    var siteConfig = Config.LoadSiteConfig(configPath, logger);
     var siteModel = Config.BuildSiteModel(siteConfig);
     var markdownPipeline = new MarkdownPipelineBuilder()
         .UseAdvancedExtensions()
